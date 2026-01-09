@@ -21,3 +21,6 @@ Facilitar el acceso a las versiones más recientes del cliente y mantener a la c
 ---
 
 Gracias por formar parte del proyecto ❤️
+
+ATT: Luna Client Team 
+
