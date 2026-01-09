@@ -1,6 +1,7 @@
-name: Release Announcement
+name: Discord Notifications
 
 on:
+  push:
   release:
     types: [published]
 
@@ -9,19 +10,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Notify Discord about new build
+      - name: Notify Discord
         uses: Ilshidur/action-discord@master
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_MESSAGE: |
-            🆕 **Nueva build disponible**
-            
-            📦 Proyecto: **${{ github.repository }}**
-            🏷️ Versión: **${{ github.event.release.tag_name }}**
-            👤 Publicado por: **${{ github.actor }}**
-            
-            📝 Cambios:
-            ${{ github.event.release.body }}
-            
-            ⬇️ Descargar aquí:
-            ${{ github.event.release.html_url }}
+            ${{ github.event_name == 'push' && format(
+            '🔁 **Nuevo Push Detectado**\n\n👤 Autor: **{0}**\n📦 Repo: **{1}**\n🌿 Branch: **{2}**\n🔐 Commit: `{3}`\n🔗 https://github.com/{1}/commit/{3}',
+            github.actor,
+            github.repository,
+            github.ref_name,
+            github.sha
+            ) || '' }}
+
+            ${{ github.event_name == 'release' && format(
+            '🆕 **Nueva Build Disponible**\n\n📦 Proyecto: **{0}**\n🏷️ Versión: **{1}**\n👤 Publicado por: **{2}**\n\n📝 Cambios:\n{3}\n\n⬇️ Descargar:\n{4}',
+            github.repository,
+            github.event.release.tag_name,
+            github.actor,
+            github.event.release.body,
+            github.event.release.html_url
+            ) || '' }}
