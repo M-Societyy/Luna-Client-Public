@@ -1,0 +1,27 @@
+name: Release Announcement
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Notify Discord about new build
+        uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_MESSAGE: |
+            🆕 **Nueva build disponible**
+            
+            📦 Proyecto: **${{ github.repository }}**
+            🏷️ Versión: **${{ github.event.release.tag_name }}**
+            👤 Publicado por: **${{ github.actor }}**
+            
+            📝 Cambios:
+            ${{ github.event.release.body }}
+            
+            ⬇️ Descargar aquí:
+            ${{ github.event.release.html_url }}
